@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormGroup, Label, Input, Button } from 'reactstrap';
+import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import axios, { post } from 'axios';
 
 class About extends Component {
@@ -10,14 +10,19 @@ class About extends Component {
             file: null
         }
     }
-    onChange(e) {
+    onChangeFile(e) {
         this.setState({file: e.target.files[0]})
     }
 
+    onChange(field, value) {
+        this.setState({[field]: value})
+    }
+
     fileUpload(){
-        const { file } = this.state
-        const url = 'http://localhost:8080/api/books/upload';
+        const { email, file } = this.state
+        const url = 'http://localhost:8080/api/quantities/upload';
         const formData = new FormData();
+        formData.append('createdBy', email)
         formData.append('file', file)
         const config = {
             headers: {
@@ -33,18 +38,25 @@ class About extends Component {
             console.log(error);
         });
 
-        this.setState({file: null})
+        this.setState({file: null, email: ""})
         this.fileInput.value = "";
     }
 
     render() {
         return (
             <div>
-                <h2>About</h2>
-                <FormGroup>
-                    <Label for="exampleFile">File</Label>
-                    <Input type="file" name="file" id="exampleFile" ref={ref=> this.fileInput = ref} onChange={e => this.onChange(e)}/>
-                </FormGroup>
+                <h2>Upload data</h2>
+                <Form>
+                    <FormGroup>
+                        <Label for="exampleEmail">Email</Label>
+                        <Input type="email" name="email" id="exampleEmail" placeholder="with a placeholder" value={this.state.email} onChange={e => this.onChange('email', e.target.value)} />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="exampleFile">File</Label>
+                        <Input type="file" name="file" id="exampleFile" ref={ref=> this.fileInput = ref} onChange={e => this.onChangeFile(e)}/>
+                    </FormGroup>
+                </Form>
+                
                 <Button color="primary" size="sm" onClick={() => this.fileUpload()}>Upload</Button>
             </div>
         );

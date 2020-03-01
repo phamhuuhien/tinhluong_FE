@@ -14,10 +14,10 @@ class Header extends Component {
                         <NavLink href="/" active>Home</NavLink>
                     </NavItem>
                     <NavItem>
-                        <NavLink href="/Contact">Contact</NavLink>
+                        <NavLink href="/Contact">ViewData</NavLink>
                     </NavItem>
                     <NavItem>
-                        <NavLink href="/About">About</NavLink>
+                        <NavLink href="/About">Upload</NavLink>
                     </NavItem>
                 </Nav>
             </div>

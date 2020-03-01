@@ -1,44 +1,67 @@
 import React, { Component } from 'react';
-import { Table } from 'reactstrap';
+import BootstrapTable from 'react-bootstrap-table-next';
+import axios from 'axios';
+import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
+
+const columns = [{
+  dataField: 'id',
+  text: 'ID'
+}, {
+  dataField: 'idUser',
+  text: 'Id User'
+}, {
+    dataField: 'tenNV',
+    text: 'User Name'
+}, {
+  dataField: 'type',
+  text: 'Type'
+}, {
+    dataField: 'sales',
+    text: 'Sales'
+}];
 
 class Contact extends Component {
-  render() {
-    return (
-        <div>
-          <h2>Contact</h2>
-          <Table>
-            <thead>
-                <tr>
-                <th>#</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Username</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                </tr>
-                <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-                </tr>
-                <tr>
-                <th scope="row">3</th>
-                <td>Larry</td>
-                <td>the Bird</td>
-                <td>@twitter</td>
-                </tr>
-            </tbody>
-            </Table>
-        </div>
-    );
-  }
+    constructor(props) {
+        super(props)
+        this.state ={
+            products: []
+        }
+    }
+
+    onChange(field, value) {
+        this.setState({[field]: value})
+    }
+
+    loadData() {
+        let thiz = this
+        axios.get(`http://localhost:8080/api/quantities/${this.state.email}`)
+        .then(function (response) {
+            thiz.setState({
+                products: response.data
+            })
+        })
+        .catch(function (error) {
+            // handle error
+            console.log(error);
+        })
+    }
+
+    render() {
+        return (
+            <div>
+            <h2>View data</h2>
+            <Form>
+                <FormGroup>
+                    <Label for="exampleEmail">Email</Label>
+                    <Input type="email" name="email" id="exampleEmail" placeholder="with a placeholder" value={this.state.email} onChange={e => this.onChange('email', e.target.value)} />
+                </FormGroup>
+            </Form>
+
+            <Button color="primary" size="sm" onClick={() => this.loadData()}>View Data</Button>
+            <BootstrapTable keyField='id' data={ this.state.products } columns={ columns } />
+            </div>
+        );
+    }
 }
 
 export default Contact;
