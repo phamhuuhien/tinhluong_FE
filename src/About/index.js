@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import axios, { post } from 'axios';
+import { withAlert } from 'react-alert'
 
 class About extends Component {
 
@@ -20,6 +21,7 @@ class About extends Component {
 
     fileUpload(){
         const { email, file } = this.state
+        const { alert } = this.props
         const url = 'http://localhost:8080/api/quantities/upload';
         const formData = new FormData();
         formData.append('createdBy', email)
@@ -31,15 +33,14 @@ class About extends Component {
             }
         }
 
-        post(url, formData, config).then(function (response) {
+        post(url, formData, config).then(response => {
             console.log(response);
+            alert.success("Uploading success!");
+            this.setState({file: null, email: ""})
         })
         .catch(function (error) {
             console.log(error);
         });
-
-        this.setState({file: null, email: ""})
-        this.fileInput.value = "";
     }
 
     render() {
@@ -53,7 +54,7 @@ class About extends Component {
                     </FormGroup>
                     <FormGroup>
                         <Label for="exampleFile">File</Label>
-                        <Input type="file" name="file" id="exampleFile" ref={ref=> this.fileInput = ref} onChange={e => this.onChangeFile(e)}/>
+                        <Input type="file" name="file" id="exampleFile" onChange={e => this.onChangeFile(e)}/>
                     </FormGroup>
                 </Form>
                 
@@ -63,4 +64,4 @@ class About extends Component {
     }
 }
 
-export default About;
+export default withAlert()(About)
